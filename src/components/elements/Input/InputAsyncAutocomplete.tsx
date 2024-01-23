@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -6,28 +5,27 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useFormContext } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Person } from "@/types/Person";
-import { personServices } from "@/services/PersonService";
-import { useDebounce } from "@/utils";
+import { personServices } from "@/services/personService";
+import { InputBaseProps } from "./InputBase";
+import { FormControl, FormHelperText } from "@mui/material";
+import { Box } from "..";
 
-interface Props {
-  name: string;
-  label: string;
-}
-
-export default function InputAsyncAutocomplete({ name, label }: Props) {
+export default function InputAsyncAutocomplete({
+  name,
+  label,
+  error,
+}: Omit<InputBaseProps, "idPrefix" | "placeholder" | "onChange" | "type">) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [person, setPersons] = useState<Omit<Person, "email" | "telefone">[]>(
+  const [persons, setPersons] = useState<Omit<Person, "email" | "telefone">[]>(
     []
   );
-  const { register } = useFormContext();
-
-  const loading = open && person.length === 0;
+  const { register, clearErrors } = useFormContext();
 
   async function getAllperson() {
     const all_person = await personServices.getAll();
 
-    if (person) {
+    if (persons) {
       setPersons(all_person);
     }
 
@@ -35,17 +33,16 @@ export default function InputAsyncAutocomplete({ name, label }: Props) {
   }
 
   useEffect(() => {
-    if (open) {
+    if (open && persons.length < 1) {
       setIsLoading(true);
 
-      useDebounce(getAllperson);
+      getAllperson();
     }
   }, [open]);
 
   return (
     <Autocomplete
-      id="asynchronous-demo"
-      sx={{ width: 300 }}
+      id={`input-autocomplete-${name}-error-message`}
       open={open}
       loadingText="Carregando..."
       noOptionsText="Nenhuma pessoa encontrada"
@@ -54,24 +51,39 @@ export default function InputAsyncAutocomplete({ name, label }: Props) {
       onClose={() => setOpen(false)}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.nome}
-      options={person}
+      onChange={() => {
+        clearErrors(name);
+      }}
+      options={persons}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          label={label}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-          }}
-          {...register(name)}
-        />
+        <FormControl error={!!error} variant="outlined" fullWidth>
+          <TextField
+            {...params}
+            label={label}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {isLoading ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+            {...register(name)}
+          />
+          <Box
+            sx={{
+              maxHeight: !!error ? "2rem" : 0,
+              transition: "max-height .3s",
+            }}
+          >
+            <FormHelperText id={`input-autocomplete-${name}-error-message`}>
+              {error || " "}
+            </FormHelperText>
+          </Box>
+        </FormControl>
       )}
     />
   );

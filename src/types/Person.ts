@@ -4,3 +4,7 @@ export type Person = {
   email: string;
   telefone: string;
 };
+
+export type CreatePersonRequestData = Omit<Person, "id" | "nome"> & {
+  pessoa: string;
+};

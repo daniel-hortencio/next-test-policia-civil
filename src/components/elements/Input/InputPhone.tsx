@@ -1,25 +1,29 @@
 import { masks } from "@/utils";
-import { TextField } from "@mui/material";
-import { useState } from "react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
+import { InputBase, InputBaseProps } from "./InputBase";
 
-interface Props {
-  name: string;
-  label: string;
-}
-
-export const InputPhone = ({ name, label }: Props) => {
-  const { register, setValue } = useFormContext();
+export const InputPhone = ({
+  name,
+  label,
+  error,
+}: Omit<InputBaseProps, "idPrefix" | "placeholder" | "onChange" | "type">) => {
+  const { setValue, clearErrors } = useFormContext();
 
   return (
-    <TextField
-      {...register(name)}
-      id={name}
-      label={label}
+    <InputBase
+      idPrefix="input-phone"
       type="tel"
-      variant="outlined"
+      name={name}
+      label={label}
+      error={error}
       placeholder="(99) 98877-6655"
-      onChange={(e) => setValue(name, masks.phoneBR(e.target.value))}
+      onChange={(value) => {
+        if (masks.phoneBR(value).length > 0) {
+          clearErrors(name);
+        }
+
+        setValue(name, masks.phoneBR(value));
+      }}
     />
   );
 };
