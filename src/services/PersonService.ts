@@ -11,21 +11,9 @@ class PersonServices {
   }
 
   async getAll(): Promise<Omit<Person, "email" | "telefone">[]> {
-    let all_persons: Omit<Person, "email" | "telefone">[] = [];
-
     return await new Promise((resolve) => {
       useDebounce(() => resolve(this.api.get(this.endpoint)));
     });
-
-    /*     useDebounce(
-      async () =>
-        await this.api.get(this.endpoint).then(({ data }) => {
-          console.log({ data });
-          all_persons = data.persons;
-        })
-    );
-
-    return all_persons; */
   }
 
   async create(data: CreatePersonRequestData): Promise<void> {

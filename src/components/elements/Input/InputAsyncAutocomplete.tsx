@@ -9,6 +9,7 @@ import { personServices } from "@/services/personService";
 import { InputBaseProps } from "./InputBase";
 import { FormControl, FormHelperText } from "@mui/material";
 import { Box } from "..";
+import { useSnackbar } from "notistack";
 
 export default function InputAsyncAutocomplete({
   name,
@@ -22,11 +23,20 @@ export default function InputAsyncAutocomplete({
   );
   const { register, clearErrors } = useFormContext();
 
-  async function getAllperson() {
-    const all_person = await personServices.getAll();
+  const { enqueueSnackbar } = useSnackbar();
 
-    if (persons) {
-      setPersons(all_person);
+  async function getAllperson() {
+    try {
+      const all_person = await personServices.getAll();
+
+      if (persons) {
+        setPersons(all_person);
+      }
+    } catch (e) {
+      enqueueSnackbar({
+        message: `API fora do ar! Abra um novo terminal e execute "yarn server"`,
+        variant: "error",
+      });
     }
 
     setIsLoading(false);
