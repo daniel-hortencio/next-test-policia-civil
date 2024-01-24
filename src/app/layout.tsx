@@ -1,6 +1,6 @@
 "use client";
 
-import { Box } from "@/components/elements";
+import { Box } from "@/components";
 import { Inter } from "next/font/google";
 import { SnackbarProvider } from "notistack";
 

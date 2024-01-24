@@ -1,6 +1,6 @@
 "use client";
 
-import { Form, Box } from "@/components/elements";
+import { Form, Box } from "@/components";
 import { Typography } from "@mui/material";
 
 export default function Home() {

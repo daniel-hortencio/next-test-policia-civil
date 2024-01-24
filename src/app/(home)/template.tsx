@@ -3,8 +3,8 @@
 import { ReactNode } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import { Box } from "@/components/elements";
-import { Grid } from "@/components/elements";
+import { Box } from "@/components";
+import { Grid } from "@/components";
 
 export default function RootTemplate({ children }: { children: ReactNode }) {
   const xs = useMediaQuery("(max-width:900px)");
