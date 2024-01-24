@@ -6,5 +6,5 @@ export type Person = {
 };
 
 export type CreatePersonRequestData = Omit<Person, "id" | "nome"> & {
-  pessoa: string;
+  pessoa: string | number;
 };

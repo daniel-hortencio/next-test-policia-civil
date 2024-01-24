@@ -17,9 +17,9 @@ class PersonServices {
   }
 
   async create(data: CreatePersonRequestData): Promise<void> {
-    console.log({ ...data, pessoa: parseInt(data.pessoa) });
+    console.log(data);
     return await new Promise((resolve) => {
-      useDebounce(resolve);
+      useDebounce(resolve, 1000);
     });
   }
 }

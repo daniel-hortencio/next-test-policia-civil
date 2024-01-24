@@ -21,6 +21,8 @@ export const FormRegisterPerson = () => {
     formState: { errors },
     clearErrors,
     reset,
+    getFieldState,
+    getValues,
   } = methods;
   const { enqueueSnackbar } = useSnackbar();
 
@@ -42,8 +44,13 @@ export const FormRegisterPerson = () => {
   async function handleSubmitRegisterPerson(data: RegisterPersonData) {
     setIsLoading(true);
 
+    const only_number_regex = /^-?\d+$/;
+
     const person_data = {
       ...data,
+      pessoa: only_number_regex.test(data.pessoa)
+        ? parseInt(data.pessoa)
+        : data.pessoa,
       telefone: data.telefone.replace(/[^0-9\s]/g, ""),
     };
 

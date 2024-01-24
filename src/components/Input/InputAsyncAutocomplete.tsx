@@ -5,13 +5,14 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useFormContext } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Person } from "@/types/Person";
 import { personServices } from "@/services/PersonService";
 import { InputBaseProps } from "./InputBase";
 import { FormControl, FormHelperText } from "@mui/material";
 import { Box } from "..";
 import { useSnackbar } from "notistack";
+import { useDebounce } from "@/utils";
 
 export default function InputAsyncAutocomplete({
   name,
@@ -19,11 +20,12 @@ export default function InputAsyncAutocomplete({
   error,
 }: Omit<InputBaseProps, "idPrefix" | "placeholder" | "onChange" | "type">) {
   const [open, setOpen] = useState(false);
+  const [key, setKey] = useState(new Date().getTime());
   const [isLoading, setIsLoading] = useState(false);
   const [persons, setPersons] = useState<Omit<Person, "email" | "telefone">[]>(
     []
   );
-  const { register, clearErrors, setValue } = useFormContext();
+  const { register, setValue, clearErrors } = useFormContext();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -44,13 +46,9 @@ export default function InputAsyncAutocomplete({
     setIsLoading(false);
   }
 
-  useEffect(() => {
-    if (open && persons.length < 1) {
-      setIsLoading(true);
-
-      getAllperson();
-    }
-  }, [open]);
+  const updateInputValue = (value: string) => {
+    setValue(name, value);
+  };
 
   return (
     <Autocomplete
@@ -59,20 +57,35 @@ export default function InputAsyncAutocomplete({
       loadingText="Carregando..."
       noOptionsText="Nenhuma pessoa encontrada"
       loading={isLoading}
-      onOpen={() => setOpen(true)}
-      onClose={() => setOpen(false)}
-      isOptionEqualToValue={(option, value) => {
-        setValue(name, value.id);
-        return option.id === value.id;
+      freeSolo
+      onBlur={() => {
+        setOpen(false);
+        setIsLoading(false);
       }}
-      getOptionLabel={(option) => option.nome}
-      onChange={() => {
-        clearErrors(name);
+      onClose={() => {
+        setPersons(() => []);
+      }}
+      onChange={(_, value_on_select) => {
+        setKey(new Date().getTime());
+
+        updateInputValue(
+          value_on_select && typeof value_on_select !== "string"
+            ? value_on_select?.id
+            : ""
+        );
+      }}
+      getOptionLabel={(option) => {
+        if (typeof option === "string") {
+          return option;
+        }
+
+        return option.nome;
       }}
       options={persons}
       renderInput={(params) => (
         <FormControl error={!!error} variant="outlined" fullWidth>
           <TextField
+            key={key}
             {...params}
             label={label}
             InputProps={{
@@ -87,6 +100,22 @@ export default function InputAsyncAutocomplete({
               ),
             }}
             {...register(name)}
+            onChange={(e) => {
+              clearErrors(name);
+              const { value } = e.target;
+
+              updateInputValue(value);
+
+              if (value === "") {
+                useDebounce(() => setPersons(() => []));
+                setOpen(false);
+                setIsLoading(false);
+              } else {
+                setOpen(true);
+                setIsLoading(true);
+                useDebounce(getAllperson);
+              }
+            }}
           />
           <Box
             sx={{
