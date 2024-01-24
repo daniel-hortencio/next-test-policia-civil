@@ -21,7 +21,7 @@ export default function InputAsyncAutocomplete({
   const [persons, setPersons] = useState<Omit<Person, "email" | "telefone">[]>(
     []
   );
-  const { register, clearErrors } = useFormContext();
+  const { register, clearErrors, setValue } = useFormContext();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -59,7 +59,10 @@ export default function InputAsyncAutocomplete({
       loading={isLoading}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
+      isOptionEqualToValue={(option, value) => {
+        setValue("pessoa", value.id.toString());
+        return option.id === value.id;
+      }}
       getOptionLabel={(option) => option.nome}
       onChange={() => {
         clearErrors(name);

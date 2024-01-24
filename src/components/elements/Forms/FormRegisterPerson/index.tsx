@@ -3,14 +3,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Box, Button, Input } from "@/components/elements";
-import { Grid } from "../../Grid";
+import { Box, Button, Input, Grid } from "@/components/elements";
 import { personServices } from "@/services/personService";
 import { FormBase } from "../FormBase";
 import { useSnackbar } from "notistack";
 
 const PersonSchema = z.object({
-  pessoa: z.string().min(3, "Selecione uma pessoa"),
+  pessoa: z.string().min(1, "Selecione uma pessoa"),
   telefone: z
     .string()
     .regex(
@@ -58,8 +57,14 @@ export const FormRegisterPerson = () => {
   async function handleSubmitRegisterPerson(data: RegisterPersonData) {
     setIsLoading(true);
 
+    const person_data = {
+      ...data,
+      pessoa: data.pessoa.toString(),
+      telefone: data.telefone.replace(/[^0-9\s]/g, ""),
+    };
+
     personServices
-      .create(data)
+      .create(person_data)
       .then(() => {
         enqueueSnackbar({
           message: `Pessoa "${data.pessoa}" cadastrada com sucesso!`,
