@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -60,7 +62,7 @@ export default function InputAsyncAutocomplete({
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
       isOptionEqualToValue={(option, value) => {
-        setValue(name, parseInt(value.id));
+        setValue(name, value.id);
         return option.id === value.id;
       }}
       getOptionLabel={(option) => option.nome}
