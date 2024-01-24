@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Box, Button, Input, Grid } from "@/components";
@@ -21,8 +20,6 @@ export const FormRegisterPerson = () => {
     formState: { errors },
     clearErrors,
     reset,
-    getFieldState,
-    getValues,
   } = methods;
   const { enqueueSnackbar } = useSnackbar();
 
