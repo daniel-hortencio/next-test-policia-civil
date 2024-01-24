@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const PersonSchema = z.object({
-  pessoa: z.string().min(1, "Selecione uma pessoa"),
+  pessoa: z.number().gte(1, "Selecione uma pessoa"),
   telefone: z
     .string()
     .regex(

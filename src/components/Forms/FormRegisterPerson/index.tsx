@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Box, Button, Input, Grid } from "@/components";
-import { personServices } from "@/services/personService";
+import { personServices } from "@/services/PersonService";
 import { FormBase } from "../FormBase";
 import { useSnackbar } from "notistack";
 import { PersonSchema, RegisterPersonData } from "./Schema";
@@ -42,7 +42,6 @@ export const FormRegisterPerson = () => {
 
     const person_data = {
       ...data,
-      pessoa: data.pessoa.toString(),
       telefone: data.telefone.replace(/[^0-9\s]/g, ""),
     };
 

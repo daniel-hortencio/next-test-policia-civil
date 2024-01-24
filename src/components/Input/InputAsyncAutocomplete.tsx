@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useFormContext } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Person } from "@/types/Person";
-import { personServices } from "@/services/personService";
+import { personServices } from "@/services/PersonService";
 import { InputBaseProps } from "./InputBase";
 import { FormControl, FormHelperText } from "@mui/material";
 import { Box } from "..";
@@ -60,7 +60,7 @@ export default function InputAsyncAutocomplete({
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
       isOptionEqualToValue={(option, value) => {
-        setValue("pessoa", value.id.toString());
+        setValue(name, parseInt(value.id));
         return option.id === value.id;
       }}
       getOptionLabel={(option) => option.nome}
