@@ -10,12 +10,12 @@ export default function RootTemplate({ children }: { children: ReactNode }) {
   const xs = useMediaQuery("(max-width:900px)");
 
   return (
-    <Grid.Container sx={{ height: "100vh", width: "100%" }}>
+    <Grid.Container sx={{ width: "100%", overflowY: "auto" }}>
       <Grid.Item
         xs={12}
         md={6}
         sx={{
-          height: "100%",
+          minHeight: "100vh",
           boxShadow: "10px 10px 76px 1px rgba(0,0,0,0.5);",
           position: "relative",
           zIndex: 2,
@@ -25,7 +25,7 @@ export default function RootTemplate({ children }: { children: ReactNode }) {
           <Box
             component="header"
             height="8rem"
-            padding="0 2rem"
+            padding="2rem"
             width="100%"
             display="flex"
             alignItems="center"
@@ -60,7 +60,7 @@ export default function RootTemplate({ children }: { children: ReactNode }) {
           </Box>
         </Box>
       </Grid.Item>
-      <Grid.Item xs={0} md={6} sx={{ height: "100%" }}>
+      <Grid.Item xs={0} md={6} sx={{ minHeight: "100vh", overflowY: "hidden" }}>
         <img
           alt="CISP - Policia Civil"
           src="https://www.policiacivil.ce.gov.br/wp-content/uploads/sites/26/2023/12/Texto-Lidiane-3-de-dezembro-O-papel-do-delegado-de-Policia-como-o-primeiro-garantidor-da-Justica-em-prol-a-Sociedade-2.jpeg"
