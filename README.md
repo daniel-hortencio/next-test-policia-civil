@@ -14,7 +14,7 @@ pnpm server
 bun server
 ```
 
-Em seguinda, execute o comando para inicializar o projeto next: 
+Em outro terminal, execute o comando para inicializar o projeto next: 
 
 ```bash
 npm dev
